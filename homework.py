@@ -16,7 +16,10 @@ from config import (
     HEADERS, HOMEWORK_STATUSES
 )
 
-# если добавить в блок if __name__ == __main__, то падают вредные тесты
+# Я попытался изменить в коде функций все logger на logging, вот так:
+# logging.info(''), тесты проходят, но сам бот не выводит логи,
+# мне кажется из-за того, что не было настройки через basicConfig.
+# Или я не правильно понял что необходимо сделать.
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 handler = logging.StreamHandler(stream=stdout)
@@ -104,7 +107,9 @@ def main():
                         send_message(bot, message)
                 else:
                     logger.debug('Нет изменений в статусах работ')
-                current_timestamp = response['current_date']
+                current_timestamp = response.get(
+                    'current_date', current_timestamp
+                )
             else:
                 logger.critical('Недоступны переменные окружения!')
                 sys.exit('Недоступны переменные окружения!')
